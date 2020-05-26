@@ -34,6 +34,7 @@ class _MyAppState extends State<MyApp> {
   var hasUserSelectedAns = false;
   var firstClick = true;
   var endPage = false;
+  var score = 0;
 
   String generateMd5(String input) {
     return md5.convert(utf8.encode(input)).toString();
@@ -60,7 +61,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   selectHomeWidget() {
-    if(!_quizDataUpdated) {
+    if (endPage && _quizDataUpdated) {
+      return Text('you did it! you made it to the end!');
+    } else if(!_quizDataUpdated) {
       return Container(
           padding: const EdgeInsets.all(40.0),
           child: Column(
@@ -190,6 +193,7 @@ class _MyAppState extends State<MyApp> {
                         hasUserSelectedAns = true;
                         correctAnswer = true;
                         firstClick = false;
+                        score++;
                       });
                     }
                   },
@@ -236,8 +240,6 @@ class _MyAppState extends State<MyApp> {
           )
         ]
     );
-    } else if (endPage) {
-      return Text('you did it! you made it to the end!');
     }
   }
 
@@ -292,6 +294,7 @@ class _MyAppState extends State<MyApp> {
           onPressed: () {
             setState(() {
               _quizDataUpdated = !_quizDataUpdated;
+              endPage = false;
             });
           },
         ) : null,
