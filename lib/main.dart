@@ -7,7 +7,7 @@ import 'package:crypto/crypto.dart';
 
 // final is a runtime constant
 // const is compile time constant
-// TODO: score calc
+// TODO: better end page
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
   var hasUserSelectedAns = false;
   var firstClick = true;
   var endPage = false;
-  var score = 0;
+  var score = new List(10);
 
   String generateMd5(String input) {
     return md5.convert(utf8.encode(input)).toString();
@@ -93,6 +93,7 @@ class _MyAppState extends State<MyApp> {
             _quizData = quizData;
             _quizDataUpdated = !_quizDataUpdated;
             numQuestions = _quizData['results'].length;
+            score = new List(numQuestions);
           });
         } else {
           throw Exception('Error in returning quiz');
@@ -105,7 +106,24 @@ class _MyAppState extends State<MyApp> {
 
   selectHomeWidget() {
     if (endPage && _quizDataUpdated) {
-      return Text('you did it! you made it to the end with a score of' + score.toString() + "!");
+      var finalScore = 0;
+      score.forEach((val) {
+        if (val != null) {
+          finalScore++;
+        }
+      });
+      return Column(
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(40.0),
+            child: Text(
+                'You did it! You made it to the end with a score of ' + finalScore.toString() + "!",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+            ),
+          ),
+          Expanded(child: Image.asset('assets/images/fireworks.png')),
+        ],
+      );
     } else if(!_quizDataUpdated) {
       return Container(
           padding: const EdgeInsets.all(40.0),
@@ -236,7 +254,10 @@ class _MyAppState extends State<MyApp> {
                         hasUserSelectedAns = true;
                         correctAnswer = true;
                         firstClick = false;
-                        score++;
+                        if (score[qNum] == null) {
+                          score[qNum] = 1;
+                        }
+                        print(score[qNum]);
                       });
                     }
                   },
@@ -290,6 +311,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
+            resizeToAvoidBottomPadding: false,
             appBar: AppBar(
               title: (_quizData.isEmpty) ? Text('Select your quiz parameters:') : Text('Quiz Time!'),
           ),
