@@ -7,8 +7,8 @@ import 'package:crypto/crypto.dart';
 
 // final is a runtime constant
 // const is compile time constant
-// TODO: next previous question
 // TODO: score calc
+// TODO: proper end page
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -146,7 +146,7 @@ class _MyAppState extends State<MyApp> {
               ]
           )
       );
-    } else if ( _quizData.isNotEmpty) {
+    } else if (_quizData.isNotEmpty) {
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(40.0),
@@ -155,21 +155,24 @@ class _MyAppState extends State<MyApp> {
             Text(unescape.convert(_quizData['results'][qNum]['question']),
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
             Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                ButtonTheme(height: 12,
-                    child: FlatButton(child: Text(
-                      _quizData['results'][qNum]['category'],
-                      style: TextStyle(fontSize: 12),),
-                      color: Color.fromRGBO(240, 20, 20, 0.5),
-                      onPressed: () {},)),
-                ButtonTheme(height: 12,
-                    child: FlatButton(child: Text(
-                      _quizData['results'][qNum]['difficulty'],
-                      style: TextStyle(fontSize: 12),),
-                      color: Color.fromRGBO(240, 20, 20, 0.5),
-                      onPressed: () {},)),
+                Flexible(
+                  child: ButtonTheme(height: 12,
+                      child: FlatButton(child: Text(
+                        _quizData['results'][qNum]['category'],
+                        style: TextStyle(fontSize: 12),),
+                        color: Color.fromRGBO(240, 20, 20, 0.5),
+                        onPressed: () {},)),
+                ),
+                Flexible(
+                  child: ButtonTheme(height: 12,
+                      child: FlatButton(child: Text(
+                        _quizData['results'][qNum]['difficulty'],
+                        style: TextStyle(fontSize: 12),),
+                        color: Color.fromRGBO(240, 20, 20, 0.5),
+                        onPressed: () {},)),
+                ),
               ],
             ),
             ...shuffle([
@@ -261,6 +264,8 @@ class _MyAppState extends State<MyApp> {
                       correctAnswer = false;
                       firstClick = true;
                     }
+                    if (qNum == numQuestions - 1) endPage = true;
+                    else endPage = false;
                   });
                 }, label: Text('prev'), heroTag: null,),
               ),
@@ -273,9 +278,9 @@ class _MyAppState extends State<MyApp> {
                       hasUserSelectedAns = false;
                       correctAnswer = false;
                       firstClick = true;
-                    } else {
-                      endPage = true;
                     }
+                    if (qNum == numQuestions - 1) endPage = true;
+                    else endPage = false;
                   });
                 }, label: Text('next'), heroTag: null,),
               ),
